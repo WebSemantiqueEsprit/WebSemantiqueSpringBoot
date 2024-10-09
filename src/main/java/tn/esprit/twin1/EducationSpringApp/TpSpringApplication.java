@@ -9,7 +9,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import tn.esprit.twin1.EducationSpringApp.entities.Role;
 import tn.esprit.twin1.EducationSpringApp.entities.User;
 import tn.esprit.twin1.EducationSpringApp.repositories.UserRepository;
@@ -19,26 +18,31 @@ import tn.esprit.twin1.EducationSpringApp.repositories.UserRepository;
 @SpringBootApplication
 @EnableAsync
 public class TpSpringApplication implements CommandLineRunner {
-	@Autowired
-	private UserRepository userRepository;
 
-	public static void main(String[] args) {
-		SpringApplication.run(TpSpringApplication.class, args);
-	}
+    @Autowired
+    private UserRepository userRepository;
 
-	@Override
-	public void run(String... args) throws Exception {
-		User adminAccount=userRepository.findByRole(Role.ADMIN);
-		if(null==adminAccount)
-		{
-			User user=new User();
-			user.setEmail("admin@gmail.com");
-			user.setFirstName("admin");
-			user.setLastName("admin");
-			user.setRole(Role.ADMIN);
-			user.setPassword(new BCryptPasswordEncoder().encode("admin"));
-			userRepository.save(user);
-		}
-	}
+    @Autowired
+    private Jena jena; // Inject the Jena component
 
+    public static void main(String[] args) {
+        SpringApplication.run(TpSpringApplication.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        User adminAccount = userRepository.findByRole(Role.ADMIN);
+        if (adminAccount == null) {
+            User user = new User();
+            user.setEmail("admin@gmail.com");
+            user.setFirstName("admin");
+            user.setLastName("admin");
+            user.setRole(Role.ADMIN);
+            user.setPassword(new BCryptPasswordEncoder().encode("admin"));
+            userRepository.save(user);
+        }
+
+        // Run Jena after user creation
+        jena.execute();  // Call the Jena class manually
+    }
 }
