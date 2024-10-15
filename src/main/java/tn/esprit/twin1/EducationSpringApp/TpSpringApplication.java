@@ -42,7 +42,6 @@ public class TpSpringApplication implements CommandLineRunner {
             userRepository.save(user);
         }
 
-        // Run Jena after user creation
-        jena.execute();  // Call the Jena class manually
+
     }
 }
