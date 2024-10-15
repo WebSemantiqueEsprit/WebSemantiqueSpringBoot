@@ -1,4 +1,4 @@
-package tn.esprit.twin1.EducationSpringApp;
+package tn.esprit.twin1.EducationSpringApp.servicesJena;
 
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.query.*;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class Jena {
+public class ContractService {
 
     private static final String RDF_FILE_PATH = "C:/Users/pc/Desktop/Ontology-WebSemantic.rdf";
     private Model model;

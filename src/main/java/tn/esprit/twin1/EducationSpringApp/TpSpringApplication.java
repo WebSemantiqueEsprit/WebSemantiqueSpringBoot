@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import tn.esprit.twin1.EducationSpringApp.entities.Role;
 import tn.esprit.twin1.EducationSpringApp.entities.User;
 import tn.esprit.twin1.EducationSpringApp.repositories.UserRepository;
+import tn.esprit.twin1.EducationSpringApp.servicesJena.ContractService;
 
 @EnableScheduling
 @EnableAspectJAutoProxy
@@ -23,7 +24,7 @@ public class TpSpringApplication implements CommandLineRunner {
     private UserRepository userRepository;
 
     @Autowired
-    private Jena jena; // Inject the Jena component
+    private ContractService jena; // Inject the Jena component
 
     public static void main(String[] args) {
         SpringApplication.run(TpSpringApplication.class, args);
