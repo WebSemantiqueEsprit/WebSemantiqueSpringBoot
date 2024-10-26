@@ -42,13 +42,13 @@ public class CarbonReductionStrategyController {
     }
 
     // Endpoint to update an existing carbon reduction strategy
-    @PutMapping(value = "/{strategyName}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateCarbonReductionStrategy(@PathVariable String strategyName,
+    @PutMapping(value = "/{reductionStrategyName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateCarbonReductionStrategy(@PathVariable String reductionStrategyName,
             @RequestBody Map<String, Object> updatedStrategy) {
-        double newCost = Double.parseDouble(updatedStrategy.get("cost").toString());
-        double newImpactValue = Double.parseDouble(updatedStrategy.get("impactValue").toString());
+        double newCost = Double.parseDouble(updatedStrategy.get("hasCost").toString());
+        double newImpactValue = Double.parseDouble(updatedStrategy.get("hasImpactValue").toString());
 
-        carbonReductionStrategyService.updateCarbonReductionStrategy(strategyName, newCost, newImpactValue);
+        carbonReductionStrategyService.updateCarbonReductionStrategy(reductionStrategyName, newCost, newImpactValue);
         return ResponseEntity.ok("Carbon reduction strategy updated successfully!");
     }
 
