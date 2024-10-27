@@ -32,17 +32,10 @@ public class CarbonReductionStrategyService {
         }
 
         // Create a new individual for the carbon reduction strategy
-        Resource strategyResource = model.createResource(
-                "http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#" + strategyName);
-        strategyResource.addProperty(RDF.type, model.getResource(
-                "http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#CarbonReductionStrategy"));
-        strategyResource.addProperty(
-                model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasCost"),
-                model.createTypedLiteral(cost));
-        strategyResource.addProperty(
-                model.getProperty(
-                        "http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasImpactValue"),
-                model.createTypedLiteral(impactValue));
+        Resource strategyResource = model.createResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#" + strategyName);
+        strategyResource.addProperty(RDF.type, model.getResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#CarbonReductionStrategy"));
+        strategyResource.addProperty(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasCost"),model.createTypedLiteral(cost));
+        strategyResource.addProperty(model.getProperty( "http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasImpactValue"),model.createTypedLiteral(impactValue));
 
         // Save the updated model back to the RDF file
         saveRDF();
@@ -106,51 +99,54 @@ public class CarbonReductionStrategyService {
         }
     }
 
-    // Method to query carbon reduction strategies
     public String queryCarbonReductionStrategies() {
-        loadRDF();
-        String queryString = "PREFIX ontology: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> "
-                +
-                "SELECT ?strategy ?cost ?impactValue " +
-                "WHERE { " +
-                "  ?strategy a ontology:CarbonReductionStrategy . " +
-                "  ?strategy ontology:hasCost ?cost . " +
-                "  ?strategy ontology:hasImpactValue ?impactValue . " +
-                "}";
-
-        Query query = QueryFactory.create(queryString);
-        try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
-            ResultSet results = qexec.execSelect();
-
-            // Start building the JSON result
-            StringBuilder jsonResult = new StringBuilder();
-            jsonResult.append("{\n");
-            jsonResult.append("    \"CarbonReductionStrategy\": [\n");
-
-            while (results.hasNext()) {
-                QuerySolution soln = results.nextSolution();
-                Resource strategy = soln.getResource("strategy");
-                Literal cost = soln.getLiteral("cost");
-                Literal impactValue = soln.getLiteral("impactValue");
-
-                jsonResult.append("        {\n")
-                        .append("            \"reductionStrategyName\": \"").append(strategy.getLocalName())
-                        .append("\",\n") // Use getLocalName() for just the name
-                        .append("            \"hasCost\": ").append(cost.getFloat()).append(",\n")
-                        .append("            \"hasImpactValue\": ").append(impactValue.getFloat()).append("\n")
-                        .append("        }");
-                if (results.hasNext()) {
-                    jsonResult.append(","); // Add a comma if there are more results
+        try {
+            loadRDF();
+            String queryString = "PREFIX ontology: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> "
+                    + "SELECT ?strategy ?cost ?impactValue "
+                    + "WHERE { "
+                    + "  ?strategy a ontology:CarbonReductionStrategy . "
+                    + "  OPTIONAL { ?strategy ontology:hasCost ?cost . } "
+                    + "  OPTIONAL { ?strategy ontology:hasImpactValue ?impactValue . } "
+                    + "}";
+    
+            Query query = QueryFactory.create(queryString);
+            try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+                ResultSet results = qexec.execSelect();
+    
+                // Start building the JSON result
+                StringBuilder jsonResult = new StringBuilder();
+                jsonResult.append("{\n");
+                jsonResult.append("    \"CarbonReductionStrategy\": [\n");
+    
+                while (results.hasNext()) {
+                    QuerySolution soln = results.nextSolution();
+                    Resource strategy = soln.getResource("strategy");
+                    Literal cost = soln.contains("cost") ? soln.getLiteral("cost") : null;
+                    Literal impactValue = soln.contains("impactValue") ? soln.getLiteral("impactValue") : null;
+    
+                    jsonResult.append("        {\n")
+                            .append("            \"reductionStrategyName\": \"").append(strategy.getLocalName()).append("\",\n")
+                            .append("            \"hasCost\": ").append(cost != null ? cost.getFloat() : "null").append(",\n")
+                            .append("            \"hasImpactValue\": ").append(impactValue != null ? impactValue.getFloat() : "null").append("\n")
+                            .append("        }");
+                    if (results.hasNext()) {
+                        jsonResult.append(",");
+                    }
+                    jsonResult.append("\n");
                 }
-                jsonResult.append("\n");
+    
+                // Close the JSON structure
+                jsonResult.append("    ]\n");
+                jsonResult.append("}");
+    
+                return jsonResult.toString();
             }
-
-            // Close the JSON structure
-            jsonResult.append("    ]\n");
-            jsonResult.append("}");
-
-            return jsonResult.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{\"error\": \"An error occurred while querying carbon reduction strategies: " + e.getMessage() + "\"}";
         }
     }
+    
 
 }
