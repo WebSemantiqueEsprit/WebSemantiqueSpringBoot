@@ -162,7 +162,7 @@ public class CarbonFootprintService {
 
     // ***** Recherche et filtrage ******/
 
-    //recherche par name or type
+    // recherche par name or type
     public String searchCarbonFootprints(String value) {
         if (model == null) {
             loadRDF();
@@ -207,6 +207,56 @@ public class CarbonFootprintService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error searching carbon footprints: " + e.getMessage());
+        }
+    }
+
+    // Méthode pour rechercher des empreintes carbone entre deux valeurs de carbone
+    public String searchCarbonFootprintsByRange(double minValue, double maxValue) {
+        if (model == null) {
+            loadRDF();
+        }
+
+        // Construire la requête SPARQL pour filtrer les empreintes carbone par valeur
+        // de carbone
+        String queryString = "PREFIX ontology: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> "
+                +
+                "SELECT ?carbonFootprint ?hasCarbonValue ?hasType " +
+                "WHERE { " +
+                "  ?carbonFootprint a ontology:CarbonFootprint . " +
+                "  ?carbonFootprint ontology:hasCarbonValue ?hasCarbonValue . " +
+                "  ?carbonFootprint ontology:hasType ?hasType . " +
+                "  FILTER (?hasCarbonValue >= " + minValue + " && ?hasCarbonValue <= " + maxValue + ") " +
+                "}";
+
+        Query query = QueryFactory.create(queryString);
+        try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+            ResultSet results = qexec.execSelect();
+            JSONArray carbonFootprintsArray = new JSONArray();
+
+            while (results.hasNext()) {
+                QuerySolution solution = results.nextSolution();
+                JSONObject carbonFootprintObject = new JSONObject();
+
+                // Extraire les détails de chaque empreinte carbone
+                String carbonFootprintUrl = solution.getResource("carbonFootprint").toString();
+                String carbonFootprintName = carbonFootprintUrl.split("#")[1];
+
+                String hasCarbonValue = solution.get("hasCarbonValue").toString().replaceAll("\\^\\^.*", "");
+                String hasType = solution.get("hasType").toString();
+
+                carbonFootprintObject.put("footprintName", carbonFootprintName);
+                carbonFootprintObject.put("hasCarbonValue", hasCarbonValue);
+                carbonFootprintObject.put("hasType", hasType);
+
+                carbonFootprintsArray.put(carbonFootprintObject);
+            }
+
+            JSONObject resultJson = new JSONObject();
+            resultJson.put("carbonFootprints", carbonFootprintsArray);
+            return resultJson.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error searching carbon footprints by range: " + e.getMessage());
         }
     }
 

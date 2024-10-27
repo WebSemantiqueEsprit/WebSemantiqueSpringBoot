@@ -60,4 +60,14 @@ public class CarbonFootprintController {
         return ResponseEntity.ok(result);
     }
 
+    // Endpoint to search carbon footprints within a specified range of carbon
+    // values
+    @GetMapping(value = "/searchByRange", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> searchCarbonFootprintsByRange(
+            @RequestParam("minValue") double minValue,
+            @RequestParam("maxValue") double maxValue) {
+        String result = carbonFootprintService.searchCarbonFootprintsByRange(minValue, maxValue);
+        return ResponseEntity.ok(result);
+    }
+
 }
