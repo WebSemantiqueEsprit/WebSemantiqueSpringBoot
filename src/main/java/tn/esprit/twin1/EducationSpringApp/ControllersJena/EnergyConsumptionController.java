@@ -46,6 +46,9 @@ public class EnergyConsumptionController {
         Float newValue = updatedData.containsKey("value") ? Float.parseFloat(updatedData.get("value").toString()) : null;
         String newTimeFrame = (String) updatedData.get("timeFrame");
 
+
+        System.out.println("Updating URI: " + uri);
+        System.out.println("Data received: " + updatedData);
         String urio ="http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#"+uri ;
         Resource updatedEnergyConsumption = energyConsumptionService.updateEnergyConsumption(urio, newValue, newTimeFrame);
         return ResponseEntity.ok("Energy consumption updated successfully for URI: " + updatedEnergyConsumption.getURI());
