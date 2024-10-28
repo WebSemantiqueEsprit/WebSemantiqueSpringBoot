@@ -32,8 +32,8 @@ public class EnergyEfficiencyController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addEnergyEfficiency(@RequestBody Map<String, Object> newEnergyEfficiency) {
         String efficiencyName = (String) newEnergyEfficiency.get("efficiencyName");
-        String category = (String) newEnergyEfficiency.get("category");
-        double efficiencyValue = Double.parseDouble(newEnergyEfficiency.get("efficiencyValue").toString());
+        String category = (String) newEnergyEfficiency.get("rating");
+        double efficiencyValue = Double.parseDouble(newEnergyEfficiency.get("savingsPotential").toString());
 
         energyEfficiencyService.addEnergyEfficiency(efficiencyName, category, (float) efficiencyValue);
         return ResponseEntity.ok("Energy efficiency added successfully!");
@@ -42,8 +42,8 @@ public class EnergyEfficiencyController {
     // Endpoint to update an existing energy efficiency record
     @PutMapping(value = "/{efficiencyName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateEnergyEfficiency(@PathVariable String efficiencyName, @RequestBody Map<String, Object> updatedEnergyEfficiency) {
-        String newCategory = (String) updatedEnergyEfficiency.get("category");
-        double newEfficiencyValue = Double.parseDouble(updatedEnergyEfficiency.get("efficiencyValue").toString());
+        String newCategory = (String) updatedEnergyEfficiency.get("rating");
+        double newEfficiencyValue = Double.parseDouble(updatedEnergyEfficiency.get("savingsPotential").toString());
 
         energyEfficiencyService.updateEnergyEfficiency(efficiencyName, newCategory, (float) newEfficiencyValue);
         return ResponseEntity.ok("Energy efficiency updated successfully!");

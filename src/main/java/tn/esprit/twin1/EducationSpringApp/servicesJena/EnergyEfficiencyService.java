@@ -13,7 +13,7 @@ import java.io.InputStream;
 @Component
 public class EnergyEfficiencyService {
 
-    private static final String RDF_FILE_PATH = "C:/path/to/your/Ontology.rdf";
+    private static final String RDF_FILE_PATH = "/Users/macbookpro/Desktop/websementique/projet_Chouaib/Ontology-WebSemantic.rdf";
     private Model model;
 
     // Load the RDF file
@@ -32,10 +32,10 @@ public class EnergyEfficiencyService {
         if (model == null) {
             loadRDF();
         }
-        Resource efficiencyResource = model.createResource("http://www.semanticweb.org/yourontology#" + efficiencyName);
-        efficiencyResource.addProperty(RDF.type, model.getResource("http://www.semanticweb.org/yourontology#EnergyEfficiency"));
-        efficiencyResource.addProperty(model.getProperty("http://www.semanticweb.org/yourontology#hasEfficiencyRating"), efficiencyRating);
-        efficiencyResource.addProperty(model.getProperty("http://www.semanticweb.org/yourontology#hasSavingsPotential"), model.createTypedLiteral(savingsPotential));
+        Resource efficiencyResource = model.createResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#" + efficiencyName);
+        efficiencyResource.addProperty(RDF.type, model.getResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#EnergyEfficiency"));
+        efficiencyResource.addProperty(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasEfficiencyRating"), efficiencyRating);
+        efficiencyResource.addProperty(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasSavingsPotential"), model.createTypedLiteral(savingsPotential));
 
         saveRDF();
     }
@@ -46,12 +46,12 @@ public class EnergyEfficiencyService {
             loadRDF();
         }
 
-        Resource efficiencyResource = model.getResource("http://www.semanticweb.org/yourontology#" + efficiencyName);
+        Resource efficiencyResource = model.getResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#" + efficiencyName);
         if (efficiencyResource != null) {
-            efficiencyResource.removeAll(model.getProperty("http://www.semanticweb.org/yourontology#hasEfficiencyRating"))
-                    .addProperty(model.getProperty("http://www.semanticweb.org/yourontology#hasEfficiencyRating"), newRating);
-            efficiencyResource.removeAll(model.getProperty("http://www.semanticweb.org/yourontology#hasSavingsPotential"))
-                    .addProperty(model.getProperty("http://www.semanticweb.org/yourontology#hasSavingsPotential"), model.createTypedLiteral(newSavingsPotential));
+            efficiencyResource.removeAll(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasEfficiencyRating"))
+                    .addProperty(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasEfficiencyRating"), newRating);
+            efficiencyResource.removeAll(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasSavingsPotential"))
+                    .addProperty(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasSavingsPotential"), model.createTypedLiteral(newSavingsPotential));
 
             saveRDF();
         }
@@ -63,7 +63,7 @@ public class EnergyEfficiencyService {
             loadRDF();
         }
 
-        Resource efficiencyResource = model.getResource("http://www.semanticweb.org/yourontology#" + efficiencyName);
+        Resource efficiencyResource = model.getResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#" + efficiencyName);
         if (efficiencyResource != null) {
             model.removeAll(efficiencyResource, null, null);
             model.removeAll(null, null, efficiencyResource);
@@ -80,7 +80,7 @@ public class EnergyEfficiencyService {
 
         // Build SPARQL query with optional filters
         StringBuilder queryString = new StringBuilder(
-                "PREFIX ontology: <http://www.semanticweb.org/yourontology#> " +
+                "PREFIX ontology: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> " +
                         "SELECT ?efficiency ?rating ?savingsPotential " +
                         "WHERE { " +
                         "  ?efficiency a ontology:EnergyEfficiency . " +
@@ -138,7 +138,7 @@ public class EnergyEfficiencyService {
             loadRDF();
         }
         String queryString =
-                "PREFIX ontology: <http://www.semanticweb.org/yourontology#> " +
+                "PREFIX ontology: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> " +
                         "SELECT ?rating ?savingsPotential " +
                         "WHERE { " +
                         "  ontology:" + efficiencyName + " a ontology:EnergyEfficiency . " +
@@ -155,7 +155,7 @@ public class EnergyEfficiencyService {
             loadRDF();
         }
         String queryString =
-                "PREFIX ontology: <http://www.semanticweb.org/yourontology#> " +
+                "PREFIX ontology: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> " +
                         "SELECT ?efficiency ?savingsPotential " +
                         "WHERE { " +
                         "  ?efficiency a ontology:EnergyEfficiency . " +
