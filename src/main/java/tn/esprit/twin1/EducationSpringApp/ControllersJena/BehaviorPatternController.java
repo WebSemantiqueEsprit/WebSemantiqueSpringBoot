@@ -52,6 +52,27 @@ public class BehaviorPatternController {
         return ResponseEntity.ok("Behavior pattern deleted successfully!");
     }
 
+
+    // Endpoint to search Behavior Patterns by usage pattern or reduction potential
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Map<String, Object>>> searchBehaviorPatterns(
+            @RequestParam(required = false) String usagePattern,
+            @RequestParam(required = false) Float minReductionPotential) {
+
+        List<Map<String, Object>> result = behaviorPatternService.searchBehaviorPatterns(usagePattern, minReductionPotential);
+        return ResponseEntity.ok(result);
+    }
+
+    // Endpoint to filter Behavior Patterns by usage pattern and maximum reduction potential
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Map<String, Object>>> filterBehaviorPatterns(
+            @RequestParam(required = false) String usagePattern,
+            @RequestParam(required = false) Float maxReductionPotential) {
+
+        List<Map<String, Object>> result = behaviorPatternService.filterBehaviorPatterns(usagePattern, maxReductionPotential);
+        return ResponseEntity.ok(result);
+    }
+
     // Endpoint to get Behavior Patterns that enable Carbon Reduction Strategy
     @GetMapping(value = "/carbon-reduction", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Map<String, Object>>> getBehaviorPatternsWithCarbonReductionStrategy() {

@@ -206,4 +206,96 @@ public class BehaviorPatternService {
         }
     }
 
+    // Search for Behavior Patterns by usage pattern or reduction potential
+    public List<Map<String, Object>> searchBehaviorPatterns(String usagePattern, Float minReductionPotential) {
+        List<Map<String, Object>> searchResults = new ArrayList<>();
+
+        StringBuilder queryString = new StringBuilder(
+                "PREFIX ont: <" + ONTOLOGY_NAMESPACE + "> " +
+                        "SELECT ?behaviorPattern ?reductionPotential ?usagePattern " +
+                        "WHERE { " +
+                        "  ?behaviorPattern a ont:BehaviorPattern . " +
+                        "  OPTIONAL { ?behaviorPattern ont:hasReductionPotential ?reductionPotential . } " +
+                        "  OPTIONAL { ?behaviorPattern ont:hasUsagePattern ?usagePattern . } ");
+
+        // Add conditions for the search
+        if (usagePattern != null && !usagePattern.isEmpty()) {
+            queryString.append("FILTER (CONTAINS(?usagePattern, \"" + usagePattern + "\")) ");
+        }
+        if (minReductionPotential != null) {
+            queryString.append("FILTER (?reductionPotential >= " + minReductionPotential + ") ");
+        }
+
+        queryString.append("}");
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(QueryFactory.create(queryString.toString()), model)) {
+            ResultSet results = queryExecution.execSelect();
+
+            while (results.hasNext()) {
+                QuerySolution solution = results.next();
+                // Extract and map results (populate the searchResults list)
+                String behaviorPattern = solution.getResource("behaviorPattern").toString();
+                String reductionPotential = solution.get("reductionPotential") != null ? solution.get("reductionPotential").toString() : "N/A";
+                String usagePatternValue = solution.get("usagePattern") != null ? solution.get("usagePattern").toString() : "N/A";
+
+                Map<String, Object> behaviorPatternMap = Map.of(
+                        "behaviorPattern", behaviorPattern,
+                        "reductionPotential", reductionPotential,
+                        "usagePattern", usagePatternValue
+                );
+
+                searchResults.add(behaviorPatternMap);
+            }
+        }
+
+        return searchResults;
+    }
+
+
+    // Filter Behavior Patterns by specific criteria
+    public List<Map<String, Object>> filterBehaviorPatterns(String usagePattern, Float maxReductionPotential) {
+        List<Map<String, Object>> filterResults = new ArrayList<>();
+
+        StringBuilder queryString = new StringBuilder(
+                "PREFIX ont: <" + ONTOLOGY_NAMESPACE + "> " +
+                        "SELECT ?behaviorPattern ?reductionPotential ?usagePattern " +
+                        "WHERE { " +
+                        "  ?behaviorPattern a ont:BehaviorPattern . " +
+                        "  OPTIONAL { ?behaviorPattern ont:hasReductionPotential ?reductionPotential . } " +
+                        "  OPTIONAL { ?behaviorPattern ont:hasUsagePattern ?usagePattern . } ");
+
+        // Add conditions for filtering
+        if (usagePattern != null && !usagePattern.isEmpty()) {
+            queryString.append("FILTER (STR(?usagePattern) = \"" + usagePattern + "\") ");
+        }
+        if (maxReductionPotential != null) {
+            queryString.append("FILTER (?reductionPotential <= " + maxReductionPotential + ") ");
+        }
+
+        queryString.append("}");
+
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(QueryFactory.create(queryString.toString()), model)) {
+            ResultSet results = queryExecution.execSelect();
+
+            while (results.hasNext()) {
+                QuerySolution solution = results.next();
+                // Extract and map results (populate the filterResults list)
+                String behaviorPattern = solution.getResource("behaviorPattern").toString();
+                String reductionPotential = solution.get("reductionPotential") != null ? solution.get("reductionPotential").toString() : "N/A";
+                String usagePatternValue = solution.get("usagePattern") != null ? solution.get("usagePattern").toString() : "N/A";
+
+                Map<String, Object> behaviorPatternMap = Map.of(
+                        "behaviorPattern", behaviorPattern,
+                        "reductionPotential", reductionPotential,
+                        "usagePattern", usagePatternValue
+                );
+
+                filterResults.add(behaviorPatternMap);
+            }
+        }
+
+        return filterResults;
+    }
+
+
 }
