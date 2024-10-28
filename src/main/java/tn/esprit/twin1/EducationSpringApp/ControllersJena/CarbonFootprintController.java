@@ -70,4 +70,32 @@ public class CarbonFootprintController {
         return ResponseEntity.ok(result);
     }
 
+    // Endpoint to get all relations between CarbonFootprint and
+    // CarbonReductionStrategy
+    @GetMapping("/relations")
+    public ResponseEntity<String> getRelations() {
+        // Call the service method to get relations
+        String relations = carbonFootprintService.getRelationsBetweenCarbonFootprintAndReductionStrategy();
+
+        // Return the response
+        return ResponseEntity.ok(relations);
+    }
+
+    @PostMapping("/addRelation")
+    public ResponseEntity<String> addRelation(@RequestParam String relationName) {
+        carbonFootprintService.addRelation(relationName);
+        return ResponseEntity.ok("Relation ajoutée avec succès : " + relationName);
+    }
+
+    @PostMapping("/addInstanceWithRelation")
+    public ResponseEntity<String> addInstanceWithRelation(
+            @RequestParam String footprintName,
+            @RequestParam String reductionStrategyName,
+            @RequestParam double carbonValue,
+            @RequestParam String type,
+            @RequestParam String relationName) {
+            carbonFootprintService.addInstanceWithRelation(footprintName, reductionStrategyName, carbonValue, type, relationName);
+        return ResponseEntity.ok("Instance et relation ajoutées avec succès : " + relationName);
+    }
+
 }
