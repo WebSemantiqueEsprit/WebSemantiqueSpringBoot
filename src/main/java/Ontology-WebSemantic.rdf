@@ -199,16 +199,11 @@
     <rdfs:domain rdf:resource="http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#BehaviorPattern"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </owl:DatatypeProperty>
-  <untitled-ontology-4:EnergyStorage rdf:about="http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#Test">
-    <untitled-ontology-4:hasCapacity rdf:datatype="http://www.w3.org/2001/XMLSchema#float"
-    >9000.0</untitled-ontology-4:hasCapacity>
-    <untitled-ontology-4:hasEfficiency rdf:datatype="http://www.w3.org/2001/XMLSchema#float"
-    >91.0</untitled-ontology-4:hasEfficiency>
-    <untitled-ontology-4:hasImplementationCost rdf:datatype="http://www.w3.org/2001/XMLSchema#float"
-    >7500.0</untitled-ontology-4:hasImplementationCost>
-    <untitled-ontology-4:hasCostSavings rdf:datatype="http://www.w3.org/2001/XMLSchema#float"
-    >3500.0</untitled-ontology-4:hasCostSavings>
-    <rdf:type rdf:resource="http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#OptimizationSolution"/>
+  <untitled-ontology-4:EnergyStorage rdf:about="http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#YEZI_SHABEB_ZAB">
+    <untitled-ontology-4:hasEfficiency rdf:datatype="http://www.w3.org/2001/XMLSchema#double"
+    >50.0</untitled-ontology-4:hasEfficiency>
+    <untitled-ontology-4:hasCapacity rdf:datatype="http://www.w3.org/2001/XMLSchema#double"
+    >12000.0</untitled-ontology-4:hasCapacity>
   </untitled-ontology-4:EnergyStorage>
   <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#Usage_Journalier">
     <untitled-ontology-4:hasReductionPotential rdf:datatype="http://www.w3.org/2001/XMLSchema#float"
@@ -275,9 +270,9 @@
             <untitled-ontology-4:usesOptimizationSolution>
               <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#Marie_SolarPanels">
                 <untitled-ontology-4:hasCostSavings rdf:datatype=
-                "http://www.w3.org/2001/XMLSchema#double">1000.0</untitled-ontology-4:hasCostSavings>
+                "http://www.w3.org/2001/XMLSchema#float">1000.0</untitled-ontology-4:hasCostSavings>
                 <untitled-ontology-4:hasImplementationCost rdf:datatype=
-                "http://www.w3.org/2001/XMLSchema#double">8000.0</untitled-ontology-4:hasImplementationCost>
+                "http://www.w3.org/2001/XMLSchema#float">8000.0</untitled-ontology-4:hasImplementationCost>
                 <rdf:type rdf:resource="http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#OptimizationSolution"/>
               </owl:NamedIndividual>
             </untitled-ontology-4:usesOptimizationSolution>
