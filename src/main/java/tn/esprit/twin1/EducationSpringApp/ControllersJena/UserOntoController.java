@@ -104,4 +104,10 @@ public class UserOntoController {
         List<Map<String, String>> result = userService.searchUserByName(UserName);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<Map<String, String>>> filterUsersByCarbonFootprintGoal(@RequestParam float carbonFootprintGoal) {
+        List<Map<String, String>> filteredUsers = userService.filterUsersByCarbonFootprintGoal(carbonFootprintGoal);
+        return ResponseEntity.ok(filteredUsers);
+    }
 }

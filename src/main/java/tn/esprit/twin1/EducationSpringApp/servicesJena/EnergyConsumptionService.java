@@ -226,6 +226,43 @@ public class EnergyConsumptionService {
     }
 
 
+    public List<Map<String, String>> getEnergyConsumptionsInRange(float minValue, float maxValue) {
+        loadRDF();
+        List<Map<String, String>> energyConsumptions = new ArrayList<>();
+
+        // Define the SPARQL query to retrieve EnergyConsumption instances within the specified range
+        String queryString = "PREFIX ont: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> "
+                + "SELECT ?consumption ?timeFrame ?value "
+                + "WHERE { "
+                + "   ?consumption a ont:EnergyConsumption . "
+                + "   ?consumption ont:hasTimeFrame ?timeFrame . "
+                + "   ?consumption ont:hasValue ?value . "
+                + "   FILTER(?value >= " + minValue + " && ?value <= " + maxValue + ") "
+                + "}";
+
+        Query query = QueryFactory.create(queryString);
+        try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+            ResultSet results = qexec.execSelect();
+
+            // Process each result in the ResultSet
+            while (results.hasNext()) {
+                QuerySolution soln = results.nextSolution();
+                Map<String, String> details = new HashMap<>();
+
+                // Extract URI, get the last part after the '#'
+                String fullUri = soln.getResource("consumption").getURI();
+                String uriName = fullUri.substring(fullUri.lastIndexOf("#") + 1);
+
+                // Add URI name, time frame, and value to the map
+                details.put("URI", uriName);
+                details.put("TimeFrame", soln.getLiteral("timeFrame").getString());
+                details.put("Value", String.valueOf(soln.getLiteral("value").getFloat()));
+
+                energyConsumptions.add(details);
+            }
+        }
+        return energyConsumptions;
+    }
 
 
 }

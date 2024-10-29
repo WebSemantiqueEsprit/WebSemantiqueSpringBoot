@@ -85,4 +85,12 @@ public class EnergyConsumptionController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/filter")
+    public List<Map<String, String>> getEnergyConsumptionsInRange(
+            @RequestParam float minValue,
+            @RequestParam float maxValue) {
+        // Call the service method to get energy consumptions in the specified range
+        return energyConsumptionService.getEnergyConsumptionsInRange(minValue, maxValue);
+    }
+
 }

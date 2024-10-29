@@ -209,4 +209,50 @@ public class UserService {
         return userDetailsList; // Return the list of user details
     }
 
+
+    public List<Map<String, String>> filterUsersByCarbonFootprintGoal(float carbonFootprintGoal) {
+        // Check if the model is initialized
+        if (model == null) {
+            loadRDF();
+        }
+
+        List<Map<String, String>> users = new ArrayList<>();
+
+        // Define the SPARQL query to filter users by carbon footprint goal
+        String queryString =
+                "PREFIX ont: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> " +
+                        "SELECT ?user ?name ?email ?carbonFootprintGoal " +
+                        "WHERE { " +
+                        "  ?user a ont:User . " +
+                        "  ?user ont:hasName ?name . " +
+                        "  ?user ont:hasEmail ?email . " +
+                        "  ?user ont:hasCarbonFootprintGoal ?carbonFootprintGoal . " +
+                        "  FILTER(?carbonFootprintGoal <= " + carbonFootprintGoal + ") " + // Filter by carbon footprint goal
+                        "}";
+
+        Query query = QueryFactory.create(queryString);
+        try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+            ResultSet results = qexec.execSelect();
+
+            // Process each result in the ResultSet
+            while (results.hasNext()) {
+                QuerySolution soln = results.nextSolution();
+                Map<String, String> details = new HashMap<>();
+
+                // Extract URI, get the last part after the '#'
+                String fullUri = soln.getResource("user").getURI();
+                String uriName = fullUri.substring(fullUri.lastIndexOf("#") + 1);
+
+                // Add URI name, name, email, and carbon footprint goal to the map
+                details.put("URI", uriName);
+                details.put("Name", soln.getLiteral("name").getString());
+                details.put("Email", soln.getLiteral("email").getString());
+                details.put("CarbonFootprintGoal", String.valueOf(soln.getLiteral("carbonFootprintGoal").getFloat())); // Ensure to convert to String
+
+                users.add(details);
+            }
+        }
+        return users; // Return the filtered list of users
+    }
+
 }
