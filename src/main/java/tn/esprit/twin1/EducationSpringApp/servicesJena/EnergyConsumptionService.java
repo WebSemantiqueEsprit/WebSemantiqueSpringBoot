@@ -171,5 +171,61 @@ public class EnergyConsumptionService {
     }
 
 
+    public List<Map<String, String>> searchByEfficiencyName(String efficiencyName) {
+        // Check if the model is initialized
+        if (model == null) {
+            loadRDF();
+        }
+
+        List<Map<String, String>> energyConsumptionDetails = new ArrayList<>();
+
+        String queryString =
+                "PREFIX ontology: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> " +
+                        "SELECT ?consumption ?timeFrame ?value " +
+                        "WHERE { " +
+                        "  ontology:" + efficiencyName + " a ontology:EnergyConsumption . " +
+                        "  ontology:" + efficiencyName + " ontology:hasTimeFrame ?timeFrame . " +
+                        "  ontology:" + efficiencyName + " ontology:hasValue ?value . " +
+                        "}";
+
+        Query query = QueryFactory.create(queryString);
+        try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+            ResultSet results = qexec.execSelect();
+
+            // Process each result in the ResultSet
+            while (results.hasNext()) {
+                QuerySolution soln = results.nextSolution();
+                Map<String, String> details = new HashMap<>();
+
+                // Check if the consumption resource is available
+                if (soln.getResource("consumption") != null) {
+                    String fullUri = soln.getResource("consumption").getURI();
+                    String uriName = fullUri.substring(fullUri.lastIndexOf("#") + 1);
+                    details.put("URI", efficiencyName);
+                } else {
+                    details.put("URI", efficiencyName); // Handle the case where consumption is not found
+                }
+
+                // Add time frame and value, checking for nulls
+                if (soln.getLiteral("timeFrame") != null) {
+                    details.put("TimeFrame", soln.getLiteral("timeFrame").getString());
+                } else {
+                    details.put("TimeFrame", "N/A");
+                }
+
+                if (soln.getLiteral("value") != null) {
+                    details.put("Value", String.valueOf(soln.getLiteral("value").getFloat()));
+                } else {
+                    details.put("Value", "N/A");
+                }
+
+                energyConsumptionDetails.add(details);
+            }
+        }
+        return energyConsumptionDetails;
+    }
+
+
+
 
 }

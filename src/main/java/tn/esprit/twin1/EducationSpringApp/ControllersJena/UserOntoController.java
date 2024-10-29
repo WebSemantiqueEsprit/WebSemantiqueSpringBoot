@@ -97,4 +97,11 @@ public class UserOntoController {
 
         return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Map<String, String>>> searchUserByName(@RequestParam String UserName) {
+        List<Map<String, String>> result = userService.searchUserByName(UserName);
+        return ResponseEntity.ok(result);
+    }
 }
