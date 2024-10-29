@@ -12,7 +12,7 @@ import java.io.InputStream;
 @Component
 public class CarbonReductionStrategyService {
 
-    private static final String RDF_FILE_PATH = "C:/Users/pc/Desktop/Ontology-WebSemantic.rdf";
+    private static final String RDF_FILE_PATH = "src/main/java/Ontology-WebSemantic.rdf";
     private Model model;
 
     // Method to load the RDF file
