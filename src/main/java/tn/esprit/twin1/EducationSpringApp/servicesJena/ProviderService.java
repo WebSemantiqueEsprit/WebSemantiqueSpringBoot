@@ -33,7 +33,6 @@ public class ProviderService {
         if (model == null) {
             loadRDF();
         }
-
         Resource providerResource = model.createResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#" + providerName);
         providerResource.addProperty(RDF.type, model.getResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#Provider"));
         providerResource.addProperty(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasNameProvider"), providerName);
@@ -47,13 +46,11 @@ public class ProviderService {
         if (model == null) {
             loadRDF();
         }
-
         Resource providerResource = model.getResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#" + providerName);
         if (providerResource != null) {
             // Update the green energy percentage property
             providerResource.removeAll(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasGreenEnergyPercentage"));
             providerResource.addProperty(model.getProperty("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#hasGreenEnergyPercentage"), model.createTypedLiteral(newGreenEnergyPercentage));
-
             // Save changes to RDF
             saveRDF();
         }
@@ -65,7 +62,6 @@ public class ProviderService {
         if (model == null) {
             loadRDF();
         }
-
         Resource providerResource = model.getResource("http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#" + providerName);
         if (providerResource != null) {
             model.removeAll(providerResource, null, null);
@@ -126,4 +122,52 @@ public class ProviderService {
             e.printStackTrace();
         }
     }
+
+    // Search for providers by name or other attributes
+    public String searchProviders(String searchTerm) {
+        if (model == null) {
+            loadRDF();
+        }
+
+        String queryString =
+                "PREFIX ontology: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> " +
+                        "SELECT ?provider ?hasGreenEnergyPercentage ?hasNameProvider " +
+                        "WHERE { " +
+                        "  ?provider a ontology:Provider . " +
+                        "  ?provider ontology:hasGreenEnergyPercentage ?hasGreenEnergyPercentage . " +
+                        "  ?provider ontology:hasNameProvider ?hasNameProvider . " +
+                        "  FILTER regex(?hasNameProvider, \"" + searchTerm + "\", \"i\") " + // Case-insensitive search
+                        "}";
+
+        Query query = QueryFactory.create(queryString);
+        try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+            ResultSet results = qexec.execSelect();
+            JSONArray providersArray = new JSONArray();
+
+            while (results.hasNext()) {
+                QuerySolution solution = results.nextSolution();
+                JSONObject providerObject = new JSONObject();
+
+                String providerUrl = solution.getResource("provider").toString();
+                String providerName = providerUrl.split("#")[1];
+
+                String hasGreenEnergyPercentage = solution.get("hasGreenEnergyPercentage").toString().replaceAll("\\^\\^.*", "");
+                String hasNameProvider = solution.get("hasNameProvider").toString();
+
+                providerObject.put("providerName", providerName);
+                providerObject.put("hasGreenEnergyPercentage", hasGreenEnergyPercentage);
+                providerObject.put("hasNameProvider", hasNameProvider);
+
+                providersArray.put(providerObject);
+            }
+
+            JSONObject resultJson = new JSONObject();
+            resultJson.put("providers", providersArray);
+            return resultJson.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error searching providers: " + e.getMessage());
+        }
+    }
+
 }

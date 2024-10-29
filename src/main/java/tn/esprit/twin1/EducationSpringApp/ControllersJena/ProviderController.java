@@ -67,4 +67,12 @@ public class ProviderController {
         String result = providerService.queryProviders();
         return ResponseEntity.ok(result);
     }
+
+    // Endpoint to search providers
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> searchProviders(@RequestParam("searchTerm") String searchTerm) {
+        String result = providerService.searchProviders(searchTerm);
+        return ResponseEntity.ok(result);
+    }
+
 }
