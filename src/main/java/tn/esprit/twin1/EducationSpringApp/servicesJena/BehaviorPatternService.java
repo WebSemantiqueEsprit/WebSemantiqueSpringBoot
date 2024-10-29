@@ -22,7 +22,7 @@ import java.util.Map;
 public class BehaviorPatternService {
 
     private static final String ONTOLOGY_NAMESPACE = "http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#";
-    private static final String RDF_FILE_PATH = "/Users/macbookpro/Desktop/websementique/projet_Chouaib/Ontology-WebSemantic.rdf";
+    private static final String RDF_FILE_PATH =  "src/main/java/Ontology-WebSemantic.rdf";
 
     private Model model;
 
@@ -205,6 +205,7 @@ public class BehaviorPatternService {
             e.printStackTrace();
         }
     }
+
 
     // Search for Behavior Patterns by usage pattern or reduction potential
     public List<Map<String, Object>> searchBehaviorPatterns(String usagePattern, Float minReductionPotential) {

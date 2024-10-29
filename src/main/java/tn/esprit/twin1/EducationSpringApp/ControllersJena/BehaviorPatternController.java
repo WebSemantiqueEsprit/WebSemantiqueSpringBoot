@@ -19,27 +19,27 @@ public class BehaviorPatternController {
 
     // Endpoint to get all Behavior Patterns
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Map<String, Object>>> getAllBehaviorPatterns() {
-        List<Map<String, Object>> result = behaviorPatternService.getAllBehaviorPatterns();
+    public ResponseEntity<String> getAllBehaviorPatterns() {
+        String result = behaviorPatternService.queryBehaviorPatterns();
         return ResponseEntity.ok(result);
     }
 
     // Endpoint to add a new Behavior Pattern
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addBehaviorPattern(@RequestBody Map<String, Object> newBehaviorPattern) {
-        String name = (String) newBehaviorPattern.get("name");
-        String usagePattern = (String) newBehaviorPattern.get("usagePattern");
-        float reductionPotential = Float.parseFloat(newBehaviorPattern.get("reductionPotential").toString());
+        String behaviorPatternName = (String) newBehaviorPattern.get("behaviorPatternName");
+        String hasUsagePattern = (String) newBehaviorPattern.get("hasUsagePattern");
+        float hasReductionPotential = Float.parseFloat(newBehaviorPattern.get("hasReductionPotential").toString());
 
-        behaviorPatternService.addBehaviorPattern(name, usagePattern, reductionPotential);
+        behaviorPatternService.addBehaviorPattern(behaviorPatternName, hasUsagePattern, hasReductionPotential);
         return ResponseEntity.ok("Behavior pattern added successfully!");
     }
 
     // Endpoint to update an existing Behavior Pattern
     @PutMapping(value = "/{name}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateBehaviorPattern(@PathVariable String name, @RequestBody Map<String, Object> updatedBehaviorPattern) {
-        String newUsagePattern = (String) updatedBehaviorPattern.get("usagePattern");
-        float newReductionPotential = Float.parseFloat(updatedBehaviorPattern.get("reductionPotential").toString());
+        String newUsagePattern = (String) updatedBehaviorPattern.get("hasUsagePattern");
+        float newReductionPotential = Float.parseFloat(updatedBehaviorPattern.get("hasReductionPotential").toString());
 
         behaviorPatternService.updateBehaviorPattern(name, newUsagePattern, newReductionPotential);
         return ResponseEntity.ok("Behavior pattern updated successfully!");

@@ -13,7 +13,7 @@ import java.io.InputStream;
 @Component
 public class EnergyEfficiencyService {
 
-    private static final String RDF_FILE_PATH = "/Users/macbookpro/Desktop/websementique/projet_Chouaib/Ontology-WebSemantic.rdf";
+    private static final String RDF_FILE_PATH = "src/main/java/Ontology-WebSemantic.rdf";
     private Model model;
 
     // Load the RDF file
