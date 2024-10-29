@@ -19,8 +19,22 @@ public class ProviderController {
     // Endpoint to add a new provider
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addProvider(@RequestBody Map<String, Object> newProvider) {
-        String providerName = (String) newProvider.get("providerName");
-        double greenEnergyPercentage = Double.parseDouble(newProvider.get("greenEnergyPercentage").toString());
+        // Check if providerName exists and is not null
+        if (newProvider.get("providerName") == null) {
+            return ResponseEntity.badRequest().body("providerName is required.");
+        }
+        String providerName = newProvider.get("providerName").toString();
+
+        // Check if greenEnergyPercentage exists and is not null
+        if (newProvider.get("greenEnergyPercentage") == null) {
+            return ResponseEntity.badRequest().body("greenEnergyPercentage is required.");
+        }
+        double greenEnergyPercentage;
+        try {
+            greenEnergyPercentage = Double.parseDouble(newProvider.get("greenEnergyPercentage").toString());
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("greenEnergyPercentage must be a valid number.");
+        }
 
         providerService.addProvider(providerName, greenEnergyPercentage);
         return ResponseEntity.ok("Provider added successfully");
