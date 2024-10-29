@@ -46,7 +46,6 @@ public class DeviceController {
         return ResponseEntity.ok("Device updated successfully!");
     }
 
-    // Endpoint to delete a device
     @DeleteMapping(value = "/{deviceName}")
     public ResponseEntity<String> deleteDevice(@PathVariable String deviceName) {
         deviceService.deleteDevice(deviceName);
