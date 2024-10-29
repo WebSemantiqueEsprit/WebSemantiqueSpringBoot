@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 public class CarbonFootprintService {
 
-    private static final String RDF_FILE_PATH = "E:/Work/4 twin/Web Semantique/projet/Ontology-WebSemantic.rdf";
+    private static final String RDF_FILE_PATH = "C:/Users/muham/Downloads/Ontology-WebSemantic.rdf";
     private Model model;
 
     // Method to load the RDF file

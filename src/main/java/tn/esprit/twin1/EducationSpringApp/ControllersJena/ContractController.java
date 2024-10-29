@@ -4,64 +4,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import tn.esprit.twin1.EducationSpringApp.servicesJena.ContractService;
 
-import java.util.Map; // Import the Map interface
+import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/contracts")
 public class ContractController {
 
     @Autowired
     private ContractService contractService;
 
     // Endpoint to get contract data from RDF file in JSON format
-    @GetMapping(value = "/rdf/contracts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getContractsData() {
         String result = contractService.queryContracts();
         return ResponseEntity.ok(result);
     }
 
     // Endpoint to add a new contract
-    @PostMapping(value = "/contracts", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addContract(@RequestBody Map<String, Object> newContract) {
         String contractName = (String) newContract.get("contractName");
-        String duration = (String) newContract.get("duration");
-        double cost = Double.parseDouble(newContract.get("cost").toString());
+        double cost = Double.parseDouble(newContract.get("hasCostContract").toString());
+        String duration = (String) newContract.get("hasDuration");
 
-        contractService.addContract(contractName, duration, cost);
-        return ResponseEntity.ok("Contract added successfully!");
+        contractService.addContract(contractName, cost, duration);
+        return ResponseEntity.ok("Contract added successfully");
     }
 
     // Endpoint to update an existing contract
-    @PutMapping(value = "/contracts/{contractName}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{contractName}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateContract(@PathVariable String contractName, @RequestBody Map<String, Object> updatedContract) {
-        String newDuration = (String) updatedContract.get("duration");
-        double newCost = Double.parseDouble(updatedContract.get("cost").toString());
+        // Extract values from the JSON request body
+        double newCost = Double.parseDouble(updatedContract.get("hasCostContract").toString());
+        String newDuration = (String) updatedContract.get("hasDuration");
 
-        contractService.updateContract(contractName, newDuration, newCost);
+        // Call the service method to perform the update
+        contractService.updateContract(contractName, newCost, newDuration);
+
+        // Return success response
         return ResponseEntity.ok("Contract updated successfully!");
     }
-     // Endpoint to delete a contract
-     @DeleteMapping(value = "/contracts/{contractName}")
-     public ResponseEntity<String> deleteContract(@PathVariable String contractName) {
-         contractService.deleteContract(contractName);
-         return ResponseEntity.ok("Contract deleted successfully!");
-     }
-
-    // Endpoint pour rechercher des contrats par prix
-     @GetMapping(value = "/contracts/searchByCost", produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<String> searchContractsByCost(@RequestParam double minCost, @RequestParam double maxCost) {
-         String result = contractService.searchContractsByCost(minCost, maxCost);
-         return ResponseEntity.ok(result);
-     }
- 
-     // Endpoint pour rechercher des contrats par durée
-     @GetMapping(value = "/contracts/searchByDuration", produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<String> searchContractsByDuration(@RequestParam String duration) {
-         String result = contractService.searchContractsByDuration(duration);
-         return ResponseEntity.ok(result);
-     }
 
 
+    // Endpoint to delete a contract
+    @DeleteMapping("/{contractName}")
+    public ResponseEntity<String> deleteContract(@PathVariable String contractName) {
+        contractService.deleteContract(contractName);
+        return ResponseEntity.ok("Contract deleted successfully");
+    }
 }
