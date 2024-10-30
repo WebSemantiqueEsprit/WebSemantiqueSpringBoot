@@ -79,4 +79,18 @@ public class EnergyConsumptionController {
     }
 
 
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Map<String, String>>> searchEnergyEfficiency(@RequestParam String efficiencyName) {
+        List<Map<String, String>> result = energyConsumptionService.searchByEfficiencyName(efficiencyName);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/filter")
+    public List<Map<String, String>> getEnergyConsumptionsInRange(
+            @RequestParam float minValue,
+            @RequestParam float maxValue) {
+        // Call the service method to get energy consumptions in the specified range
+        return energyConsumptionService.getEnergyConsumptionsInRange(minValue, maxValue);
+    }
+
 }

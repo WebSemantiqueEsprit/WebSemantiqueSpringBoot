@@ -15,7 +15,7 @@ import java.util.Map;
 @Component
 public class ContractService {
 
-    private static final String RDF_FILE_PATH = "C:/Users/muham/Downloads/Ontology-WebSemantic.rdf";
+    private static final String RDF_FILE_PATH = "src/main/java/Ontology-WebSemantic.rdf";
     private Model model;
 
     // Load RDF file
@@ -131,4 +131,71 @@ public class ContractService {
             e.printStackTrace();
         }
     }
+
+    public String searchContracts(String contractName, Double minCost, Double maxCost, String duration) {
+        // Ensure the RDF model is loaded
+        if (model == null) {
+            loadRDF();
+        }
+
+        // Start constructing the SPARQL query
+        StringBuilder queryString = new StringBuilder(
+                "PREFIX ontology: <http://www.semanticweb.org/ghazi/ontologies/2024/8/untitled-ontology-4#> " +
+                        "SELECT ?contract ?hasCostContract ?hasDuration WHERE { ?contract a ontology:Contract ."
+        );
+
+        // Apply filters based on provided criteria
+        if (contractName != null && !contractName.isEmpty()) {
+            queryString.append(" FILTER regex(str(?contract), \"").append(contractName).append("\", \"i\") ");
+        }
+        if (minCost != null) {
+            queryString.append(" ?contract ontology:hasCostContract ?hasCostContract . FILTER(?hasCostContract >= ").append(minCost).append(") ");
+        }
+        if (maxCost != null) {
+            queryString.append(" ?contract ontology:hasCostContract ?hasCostContract . FILTER(?hasCostContract <= ").append(maxCost).append(") ");
+        }
+        if (duration != null && !duration.isEmpty()) {
+            queryString.append(" ?contract ontology:hasDuration \"").append(duration).append("\" . ");
+        }
+
+        queryString.append("}");
+
+        // Create and execute the SPARQL query
+        Query query = QueryFactory.create(queryString.toString());
+        JSONArray contractsArray = new JSONArray();
+
+        try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+            ResultSet results = qexec.execSelect();
+
+            while (results.hasNext()) {
+                QuerySolution solution = results.nextSolution();
+                JSONObject contractObject = new JSONObject();
+
+                String contractUrl = solution.getResource("contract").toString();
+                String contractNameResult = contractUrl.substring(contractUrl.indexOf('#') + 1); // Get the name after the hash
+
+                // Extract cost and duration, handling cases where values might be null
+                String hasCostContract = solution.get("hasCostContract") != null ?
+                        solution.get("hasCostContract").toString().replaceAll("\\^\\^.*", "") : "N/A";
+                String hasDurationResult = solution.get("hasDuration") != null ?
+                        solution.get("hasDuration").toString() : "N/A";
+
+                contractObject.put("contractName", contractNameResult);
+                contractObject.put("hasCostContract", hasCostContract);
+                contractObject.put("hasDuration", hasDurationResult);
+
+                contractsArray.put(contractObject);
+            }
+
+            // Construct and return the final result JSON
+            JSONObject resultJson = new JSONObject();
+            resultJson.put("contracts", contractsArray);
+            return resultJson.toString();
+        } catch (Exception e) {
+            // Log and rethrow a runtime exception for error handling
+            e.printStackTrace();
+            throw new RuntimeException("Error querying contracts: " + e.getMessage());
+        }
+    }
+
 }

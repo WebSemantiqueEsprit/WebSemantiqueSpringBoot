@@ -55,4 +55,17 @@ public class ContractController {
         contractService.deleteContract(contractName);
         return ResponseEntity.ok("Contract deleted successfully");
     }
+
+    // Endpoint to search for contracts based on criteria
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> searchContracts(
+            @RequestParam(required = false) String contractName,
+            @RequestParam(required = false) Double minCost,
+            @RequestParam(required = false) Double maxCost,
+            @RequestParam(required = false) String duration) {
+
+        String result = contractService.searchContracts(contractName, minCost, maxCost, duration);
+        return ResponseEntity.ok(result);
+    }
+
 }

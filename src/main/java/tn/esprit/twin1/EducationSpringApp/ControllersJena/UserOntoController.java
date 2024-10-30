@@ -97,4 +97,17 @@ public class UserOntoController {
 
         return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Map<String, String>>> searchUserByName(@RequestParam String UserName) {
+        List<Map<String, String>> result = userService.searchUserByName(UserName);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<Map<String, String>>> filterUsersByCarbonFootprintGoal(@RequestParam float carbonFootprintGoal) {
+        List<Map<String, String>> filteredUsers = userService.filterUsersByCarbonFootprintGoal(carbonFootprintGoal);
+        return ResponseEntity.ok(filteredUsers);
+    }
 }
